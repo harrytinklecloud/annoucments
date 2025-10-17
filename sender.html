@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Post Announcement</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Inter, Arial, sans-serif; background:#0b1220; color:#e6e8ee; margin:0; padding:24px; }
+    .card { max-width:640px; margin:0 auto; padding:18px; border-radius:14px; background:rgba(255,255,255,0.08); backdrop-filter:blur(10px); box-shadow:0 8px 32px rgba(0,0,0,0.35); }
+    .row { display:flex; gap:10px; margin-top:12px; align-items:center; }
+    .input { width:100%; padding:12px 14px; font-size:16px; border-radius:10px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.12); color:#fff; outline:none; }
+    .input:focus { border-color:#7dd3fc; box-shadow:0 0 0 3px rgba(125,211,252,0.25); }
+    .btn { padding:10px 14px; border:none; border-radius:10px; cursor:pointer; font-weight:600; background:linear-gradient(135deg,#22d3ee,#3b82f6); color:#0b1220; }
+    .status { font-size:14px; color:#a5b4fc; }
+    .token { width:100%; margin-top:10px; font-size:12px; opacity:0.8; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Post announcement</h2>
+    <input id="msg" class="input" type="text" placeholder="Type announcement and press Enter">
+    <div class="row">
+      <button class="btn" onclick="send()">Send</button>
+      <div id="status" class="status"></div>
+    </div>
+    <input id="token" class="token" type="password" placeholder="Paste GitHub token (only you should have this)">
+  </div>
+
+  <script src="relay.js"></script>
+  <script>
+    const config = {
+      owner: 'harrytinklecloud',
+      repo: 'annoucments',
+      path: 'announcement.json',
+      branch: 'main'
+    };
+
+    document.getElementById('msg').addEventListener('keydown', e => {
+      if (e.key === 'Enter') send();
+    });
+
+    async function send() {
+      const text = document.getElementById('msg').value.trim();
+      const token = document.getElementById('token').value.trim();
+      const status = document.getElementById('status');
+
+      if (!text) { status.textContent = 'Type something first.'; return; }
+      if (!token) { status.textContent = 'Paste your GitHub token.'; return; }
+
+      status.textContent = 'Sending...';
+      try {
+        await updateAnnouncement(config, token, text);
+        status.textContent = 'Posted ✔';
+        document.getElementById('msg').value = '';
+      } catch (err) {
+        status.textContent = 'Failed: ' + (err.message || 'Unknown error');
+      }
+    }
+  </script>
+</body>
+</html>
