@@ -5,17 +5,87 @@
   <title>Latest Announcement</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { margin:0; padding:16px; font-family:Inter, Arial, sans-serif; background:transparent; }
-    .panel {
-      padding:14px 16px; border-radius:12px; background:rgba(255,255,255,0.6); backdrop-filter:blur(10px);
-      color:#0f172a; font-weight:600; font-size:16px; box-shadow:0 6px 24px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+    body {
+      margin: 0;
+      padding: 40px;
+      font-family: "Inter", Arial, sans-serif;
+      background: #ffffff; /* solid white background */
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
     }
-    .meta { margin-top:8px; font-size:12px; color:#64748b; }
+
+    /* Liquid glass card */
+    .glass {
+      position: relative;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px) saturate(180%);
+      -webkit-backdrop-filter: blur(12px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: 2rem;
+      padding: 28px 32px;
+      max-width: 640px;
+      width: 100%;
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15),
+                  inset 0 4px 20px rgba(255, 255, 255, 0.3);
+      animation: fadeIn 0.4s ease;
+      overflow: hidden;
+    }
+
+    /* Liquid shine overlay */
+    .glass::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2rem;
+      backdrop-filter: blur(1px);
+      -webkit-backdrop-filter: blur(1px);
+      box-shadow:
+        inset -10px -8px 0px -11px rgba(255, 255, 255, 1),
+        inset 0px -9px 0px -8px rgba(255, 255, 255, 1);
+      opacity: 0.6;
+      z-index: -1;
+      filter: blur(1px) drop-shadow(10px 4px 6px rgba(0,0,0,0.1)) brightness(115%);
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 14px;
+      border-bottom: 1px solid rgba(200,200,200,0.4);
+      padding-bottom: 8px;
+    }
+
+    .announcement {
+      font-size: 17px;
+      font-weight: 500;
+      color: #374151;
+      line-height: 1.5;
+    }
+
+    .meta {
+      margin-top: 16px;
+      font-size: 13px;
+      color: #6b7280;
+      text-align: right;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
-  <div id="announcement" class="panel">Loading...</div>
-  <div id="meta" class="meta"></div>
+  <div class="glass">
+    <div class="title">📢 Latest Announcement</div>
+    <div id="announcement" class="announcement">Loading...</div>
+    <div id="meta" class="meta"></div>
+  </div>
 
   <script>
     const jsonUrl = 'https://harrytinklecloud.github.io/annoucments/announcement.json';
@@ -25,7 +95,7 @@
         const res = await fetch(jsonUrl + '?nocache=' + Date.now(), { cache: 'no-store' });
         const data = await res.json();
         document.getElementById('announcement').textContent = data.latest || 'No announcements yet.';
-        document.getElementById('meta').textContent = 'Live • auto-updates';
+        document.getElementById('meta').textContent = 'Updated • ' + new Date().toLocaleTimeString();
       } catch (e) {
         document.getElementById('announcement').textContent = 'Unable to load.';
         document.getElementById('meta').textContent = '';
