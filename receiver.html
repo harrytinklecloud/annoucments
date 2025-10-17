@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Latest Announcement</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { margin:0; padding:16px; font-family:Inter, Arial, sans-serif; background:transparent; }
+    .panel {
+      padding:14px 16px; border-radius:12px; background:rgba(255,255,255,0.6); backdrop-filter:blur(10px);
+      color:#0f172a; font-weight:600; font-size:16px; box-shadow:0 6px 24px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+    }
+    .meta { margin-top:8px; font-size:12px; color:#64748b; }
+  </style>
+</head>
+<body>
+  <div id="announcement" class="panel">Loading...</div>
+  <div id="meta" class="meta"></div>
+
+  <script>
+    const jsonUrl = 'https://harrytinklecloud.github.io/annoucments/announcement.json';
+
+    async function load() {
+      try {
+        const res = await fetch(jsonUrl + '?nocache=' + Date.now(), { cache: 'no-store' });
+        const data = await res.json();
+        document.getElementById('announcement').textContent = data.latest || 'No announcements yet.';
+        document.getElementById('meta').textContent = 'Live • auto-updates';
+      } catch (e) {
+        document.getElementById('announcement').textContent = 'Unable to load.';
+        document.getElementById('meta').textContent = '';
+      }
+    }
+
+    load();
+    setInterval(load, 5000); // refresh every 5s
+  </script>
+</body>
+</html>
